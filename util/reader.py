@@ -127,7 +127,7 @@ def get_user_rate(rating_file):
 def get_item_info(item_file):
     """
     get item info[title, author]
-    获取 item 信息
+    获取 item 粗略信息
     Args:
       item_file: input item_info file
     Return:
@@ -157,6 +157,44 @@ def get_item_info(item_file):
             [book_id, title, author, year, publisher, img_s, img_m, img_l] = row
             if book_id not in item_info:
                 item_info[book_id] = [title, author]
+
+    return item_info
+
+
+def get_item_full_info(item_file):
+    """
+    get item info[title, author, year, publisher, img_s, img_m, img_l]
+    获取 item 完整信息
+    Args:
+      item_file: input item_info file
+    Return:
+      a dict, key: item_id, value:[title, author]
+    """
+    if not os.path.exists(item_file):
+        return {}
+    num = 0
+    with open(item_file) as f:
+        data = csv.reader(f)
+        item_info = {}
+
+        for row in data:
+            # 过滤表头
+            if num == 0:
+                num += 1
+                continue
+
+            # 过滤小于 8 列的行
+            if len(row) < 8:
+                continue
+
+            # fix-me: 过滤大于 8 列的行
+            if len(row) > 8:
+                continue
+
+            [book_id, title, author, year, publisher, img_s, img_m, img_l] = row
+            if book_id not in item_info:
+                item_info[book_id] = [title, author,
+                                      year, publisher, img_s, img_m, img_l]
 
     return item_info
 
