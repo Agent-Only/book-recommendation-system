@@ -3,3 +3,6 @@
 /util/__pycache__
 
 /.vscode
+
+.DS_Store
+/__pycache__

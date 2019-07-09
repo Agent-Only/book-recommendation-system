@@ -8,6 +8,7 @@ import pandas as pd
 import operator
 import sys
 import math
+import json
 
 """
 公式：
@@ -38,6 +39,53 @@ def main_flow():
     # 输出 user 的推荐结果
     user_id = '246671'
     debug_recom_result(recom_result, item_info, user_id)
+
+
+def get_item_sim_info(item_id):
+    user_like = reader.get_user_like("./data/ratings.csv")
+    user_rate = reader.get_user_rate("./data/ratings.csv")
+    item_info = reader.get_item_info("./data/BX-Books.csv")
+
+    sim_info = cal_item_sim(user_like)
+
+    return json.dumps(sim_info[item_id])
+
+
+def get_user_recom_result(user_id):
+    user_like = reader.get_user_like("./data/ratings.csv")
+    user_rate = reader.get_user_rate("./data/ratings.csv")
+    item_full_info = reader.get_item_full_info("./data/BX-Books.csv")
+
+    sim_info = cal_item_sim(user_like)
+
+    recom_result = cal_recom_result(sim_info, user_rate)
+
+    recom_list = recom_result[user_id]
+    recom_dict = {}
+    recom_info_list = []
+    for pair in recom_list:
+        item_id = pair[0]
+        recom_score = pair[1]
+        if item_id not in item_full_info:
+            continue
+        [title, author, year, publisher, img_s,
+            img_m, img_l] = item_full_info[item_id]
+        info_dict = {}
+        tmp_dict = {}
+        tmp_dict["recom_score"] = recom_score
+        tmp_dict["title"] = title
+        tmp_dict["author"] = author
+        tmp_dict["year"] = year
+        tmp_dict["publisher"] = publisher
+        tmp_dict["img_l"] = img_l
+        info_dict["item_id"] = item_id
+        info_dict["info"] = tmp_dict
+        recom_info_list.append(info_dict)
+
+    recom_dict["recom_num"] = len(recom_info_list)
+    recom_dict["recom_result"] = recom_info_list
+
+    return recom_dict
 
 
 def debug_item_sim(item_info, sim_info, fixed_item_id):
