@@ -1,7 +1,6 @@
 # -*coding:utf8-*-
-import os
-import json
 import csv
+import os
 
 
 def get_user_like(rating_file):
@@ -15,31 +14,30 @@ def get_user_like(rating_file):
     """
     if not os.path.exists(rating_file):
         return {}
-    fp = open(rating_file)
     num = 0
-    user_like = {}
 
-    for line in fp:
-        # 过滤表头
-        if num == 0:
-            num += 1
-            continue
-        item = line.strip().split(';')
+    with open(rating_file, encoding="latin-1") as f:
+        data = csv.reader(f)
+        user_like = {}
 
-        # 过滤小于 3 列的行
-        if len(item) < 3:
-            continue
-        [user_id, book_id, score] = item
+        for row in data:
+            # 过滤表头
+            if num == 0:
+                num += 1
+                continue
 
-        # 过滤得分小于 6.0 的 book
-        # 即认为得分大于 6.0 的 book 可以为相似度提供贡献
-        if float(score) < 6.0:
-            continue
-        if user_id not in user_like:
-            user_like[user_id] = []
-        user_like[user_id].append(book_id)
+            # 过滤小于 3 列的行
+            if len(row) < 3:
+                continue
+            [user_id, book_id, score] = row
 
-    fp.close()
+            # 过滤得分小于 6.0 的 book
+            # 即认为得分大于 6.0 的 book 可以为相似度提供贡献
+            if float(score) < 6.0:
+                continue
+            if user_id not in user_like:
+                user_like[user_id] = []
+            user_like[user_id].append(book_id)
 
     return user_like
 
@@ -57,7 +55,7 @@ def get_user_info(user_info_file):
         return {}
 
     num = 0
-    with open(user_info_file, encoding="utf-8") as f:
+    with open(user_info_file, encoding="latin-1") as f:
         data = csv.reader(f)
         user_info = {}
 
@@ -93,33 +91,31 @@ def get_user_rate(rating_file):
     """
     if not os.path.exists(rating_file):
         return {}
-    fp = open(rating_file)
     num = 0
-    user_rate = {}
 
-    for line in fp:
-        # 过滤表头
-        if num == 0:
-            num += 1
-            continue
-        item = line.strip().split(';')
+    with open(rating_file, encoding="latin-1") as f:
+        data = csv.reader(f)
+        user_rate = {}
+        for row in data:
+            # 过滤表头
+            if num == 0:
+                num += 1
+                continue
 
-        # 过滤小于 3 列的行
-        if len(item) < 3:
-            continue
-        [user_id, book_id, score] = item
+            # 过滤小于 3 列的行
+            if len(row) < 3:
+                continue
+            [user_id, book_id, score] = row
 
-        # 过滤得分小于 6.0 的 book
-        # 即认为得分大于 6.0 的 book 可以为相似度提供贡献
-        if float(score) < 6.0:
-            continue
-        if user_id not in user_rate:
-            user_rate[user_id] = []
-            # score 简单归一化为 0~1
-            item_rate = (book_id, int(score) / 10)
-        user_rate[user_id].append(item_rate)
-
-    fp.close()
+            # 过滤得分小于 6.0 的 book
+            # 即认为得分大于 6.0 的 book 可以为相似度提供贡献
+            if float(score) < 6.0:
+                continue
+            if user_id not in user_rate:
+                user_rate[user_id] = []
+                # score 简单归一化为 0~1
+                item_rate = (book_id, int(score) / 10)
+            user_rate[user_id].append(item_rate)
 
     return user_rate
 
@@ -136,7 +132,7 @@ def get_item_info(item_file):
     if not os.path.exists(item_file):
         return {}
     num = 0
-    with open(item_file) as f:
+    with open(item_file, encoding="latin-1") as f:
         data = csv.reader(f)
         item_info = {}
 
@@ -173,7 +169,7 @@ def get_item_full_info(item_file):
     if not os.path.exists(item_file):
         return {}
     num = 0
-    with open(item_file) as f:
+    with open(item_file, encoding="latin-1") as f:
         data = csv.reader(f)
         item_info = {}
 
@@ -200,7 +196,7 @@ def get_item_full_info(item_file):
 
 
 if __name__ == "__main__":
-    # user_rate = get_user_rate("./data/ratings.csv")
+    # user_rate = get_user_rate("../data/Ratings1.csv")
     # print(user_rate)
-    user_info = get_user_info("./data/BX-Users.csv")
+    user_info = get_user_info("../data/Users1.csv")
     print(user_info)
