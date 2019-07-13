@@ -1,33 +1,66 @@
 # -*coding:utf8-*-
 """
-user cf main Algo
+user cf main Algorithm
 """
-import util.reader as reader
-import numpy as np
-import pandas as pd
-import operator
-import sys
 import math
+import operator
+
+import pandas as pd
+
+import util.reader as reader
 
 
 def main_flow():
     """
     main flow of user cf
     """
-    user_rate = reader.get_user_rate("./data/ratings.csv")
+    user_rate = reader.get_user_rate("./data/Ratings1.csv")
+    item_full_info = reader.get_item_full_info("./data/Books1.csv")
 
     item_rate_by_user = transfer_user_rate(user_rate)
     # 计算 user 相似度
     user_sim = cal_user_sim(item_rate_by_user)
-
     # 根据 user 评分, 和 user 的相似度, 得出推荐结果
     recom_result = cal_recom_result(user_rate, user_sim)
 
     user_id = "250405"
     # 测试用户相似度
-    debug_user_sim(user_sim, user_id)
+    # debug_user_sim(user_sim, user_id)
     # 测试用户推荐结果
-    debug_recom_result(recom_result, user_id)
+    # debug_recom_result(recom_result, user_id)
+
+    get_user_recom_result(user_id)
+
+
+def get_user_recom_result(user_id):
+    user_rate = reader.get_user_rate("./data/Ratings1.csv")
+    item_full_info = reader.get_item_full_info("./data/Books1.csv")
+
+    item_rate_by_user = transfer_user_rate(user_rate)
+    user_sim = cal_user_sim(item_rate_by_user)
+    recom_result = cal_recom_result(user_rate, user_sim)
+
+    recom_dict = {}
+    recom_info_list = []
+    for pair in recom_result[user_id]:
+        [item_id, recom_score] = pair
+        if item_id not in item_full_info:
+            continue
+        [title, author, year, publisher, img_s,
+         img_m, img_l] = item_full_info[item_id]
+        info_dict = {}
+        tmp_dict = {"recom_score": recom_score, "title": title, "author": author, "year": year, "publisher": publisher,
+                    "img_l": img_l}
+        info_dict["item_id"] = item_id
+        info_dict["info"] = tmp_dict
+        recom_info_list.append(info_dict)
+
+    recom_dict["recom_num"] = len(recom_info_list)
+    recom_dict["recom_result"] = recom_info_list
+
+    # print(recom_dict)
+
+    return recom_dict
 
 
 def debug_user_sim(user_sim, user_id):
@@ -130,8 +163,8 @@ def cal_user_sim(item_rate_by_user):
         for user_id_j, conum in relate_user.items():
             user_sim_info[user_id_i].setdefault(user_id_j, 0)
             user_sim_info[user_id_i][user_id_j] = conum / \
-                math.sqrt(user_rate_count[user_id_i]
-                          * user_rate_count[user_id_j])
+                                                  math.sqrt(user_rate_count[user_id_i]
+                                                            * user_rate_count[user_id_j])
     # 排序
     for user_id in user_sim_info:
         user_sim_info_sorted[user_id] = sorted(
@@ -142,14 +175,15 @@ def cal_user_sim(item_rate_by_user):
 
 def cal_recom_result(user_rate, user_sim_info):
     """  
-    recom by user cf algo
+    recom by user cf algorithm
     Args:
       user_rate: key: user_id, value: [(item_id1, rate_score1), (item_id2, rate_score2), ...]
       user_sim_info: dict, key: user_id_i, value: [(user_id_j, score_1), (user_id_k, score_2), ...]
     Return:
-      dict, key: user_id, value: dict, value_key: item_id, value_value: recom_score
+      dict, key: user_id, value: [(item_id1, recom_scroe1), (item_id2, recom_score2), ...]
     """
     recom_result = {}
+    recom_result_sorted = {}
     topk_user = 10
     item_num = 5
     for user_id, item_list in user_rate.items():
@@ -166,9 +200,14 @@ def cal_recom_result(user_rate, user_sim_info):
                 continue
             for pair in user_rate[user_id_j][:item_num]:
                 item_id_j = pair[0]
-                recom_result[user_id].setdefault(item_id_j, sim_score)
+                item_sim_score = pair[1]
+                recom_result[user_id][item_id_j] = item_sim_score
 
-    return recom_result
+    for user_id in recom_result:
+        recom_result_sorted[user_id] = sorted(
+            recom_result[user_id].items(), key=operator.itemgetter(1), reverse=True)
+
+    return recom_result_sorted
 
 
 def base_contribute_score():
@@ -188,7 +227,7 @@ def update_contribute_score(item_user_rate_count):
     Return:
         contribution score
     """
-    return 1/math.log10(1 + item_user_rate_count)
+    return 1 / math.log10(1 + item_user_rate_count)
 
 
 if __name__ == "__main__":
