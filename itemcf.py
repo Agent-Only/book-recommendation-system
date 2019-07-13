@@ -2,13 +2,13 @@
 """
 item cf main Algo
 """
-import util.reader as reader
-import numpy as np
-import pandas as pd
-import operator
-import sys
-import math
 import json
+import math
+import operator
+
+import pandas as pd
+
+import util.reader as reader
 
 """
 公式：
@@ -21,9 +21,9 @@ def main_flow():
     """
     main flow of itemcf
     """
-    user_like = reader.get_user_like("./data/ratings.csv")
-    user_rate = reader.get_user_rate("./data/ratings.csv")
-    item_info = reader.get_item_info("./data/BX-Books.csv")
+    user_like = reader.get_user_like("./data/Ratings1.csv")
+    user_rate = reader.get_user_rate("./data/Ratings1.csv")
+    item_info = reader.get_item_info("./data/Books1.csv")
 
     # 根据用户评分计算 item 的相似度
     sim_info = cal_item_sim(user_like)
@@ -43,18 +43,22 @@ def main_flow():
 
 def get_item_sim_info(item_id):
     user_like = reader.get_user_like("./data/ratings.csv")
-    user_rate = reader.get_user_rate("./data/ratings.csv")
-    item_info = reader.get_item_info("./data/BX-Books.csv")
 
     sim_info = cal_item_sim(user_like)
 
     return json.dumps(sim_info[item_id])
 
 
+def get_item_by_id(item_id):
+    item_full_info = reader.get_item_full_info("./data/Books1.csv")
+
+    return item_full_info[item_id]
+
+
 def get_user_recom_result(user_id):
-    user_like = reader.get_user_like("./data/ratings.csv")
-    user_rate = reader.get_user_rate("./data/ratings.csv")
-    item_full_info = reader.get_item_full_info("./data/BX-Books.csv")
+    user_like = reader.get_user_like("./data/Ratings1.csv")
+    user_rate = reader.get_user_rate("./data/Ratings1.csv")
+    item_full_info = reader.get_item_full_info("./data/Books1.csv")
 
     sim_info = cal_item_sim(user_like)
 
@@ -69,15 +73,10 @@ def get_user_recom_result(user_id):
         if item_id not in item_full_info:
             continue
         [title, author, year, publisher, img_s,
-            img_m, img_l] = item_full_info[item_id]
+         img_m, img_l] = item_full_info[item_id]
         info_dict = {}
-        tmp_dict = {}
-        tmp_dict["recom_score"] = recom_score
-        tmp_dict["title"] = title
-        tmp_dict["author"] = author
-        tmp_dict["year"] = year
-        tmp_dict["publisher"] = publisher
-        tmp_dict["img_l"] = img_l
+        tmp_dict = {"recom_score": recom_score, "title": title, "author": author, "year": year, "publisher": publisher,
+                    "img_l": img_l}
         info_dict["item_id"] = item_id
         info_dict["info"] = tmp_dict
         recom_info_list.append(info_dict)
@@ -172,7 +171,7 @@ def update_contribute_score(user_total_rate_num):
     item cf update sim contribution score by user
     点击数目越少，贡献度越高，数目越多贡献度越低
     """
-    return 1/math.log10(1 + user_total_rate_num)
+    return 1 / math.log10(1 + user_total_rate_num)
 
 
 def cal_item_sim(user_like):
@@ -214,8 +213,8 @@ def cal_item_sim(user_like):
     for item_id_i, relate_item in co_appear.items():
         for item_id_j, co_count in relate_item.items():
             sim_score = co_count / \
-                math.sqrt(
-                    item_user_like_count[item_id_i] * item_user_like_count[item_id_j])
+                        math.sqrt(
+                            item_user_like_count[item_id_i] * item_user_like_count[item_id_j])
             item_sim_score.setdefault(item_id_i, {})
             item_sim_score[item_id_i].setdefault(item_id_j, 0)
             # 存储 item_i 对 item_j 的相似度得分
@@ -241,7 +240,7 @@ def cal_recom_result(sim_info, user_rate):
     """
     # 有效评分次数
     recent_rate_num = 5
-    # 仅保存相似度最高的 topk 项
+    # 仅保存相似度最高的 top k 项
     topk = 10
     recom_info = {}
     recom_info_sorted = {}
