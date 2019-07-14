@@ -2,13 +2,8 @@
 """
 item cf main Algo
 """
-import json
 import math
 import operator
-
-import pandas as pd
-
-import util.reader as reader
 
 """
 公式：
@@ -17,49 +12,7 @@ predict[u][j] = ∑( i ∊ n(u) ∩ similar(j, k) ) similar[i][j] * rate[u][i]
 """
 
 
-def main_flow():
-    """
-    main flow of itemcf
-    """
-    user_like = reader.get_user_like("./data/Ratings1.csv")
-    user_rate = reader.get_user_rate("./data/Ratings1.csv")
-    item_info = reader.get_item_info("./data/Books1.csv")
-
-    # 根据用户评分计算 item 的相似度
-    sim_info = cal_item_sim(user_like)
-
-    # 根据用户评分，和 item 的相似度, 得出推荐结果
-    recom_result = cal_recom_result(sim_info, user_rate)
-
-    # 输出 debug 信息
-    # 输出 item 的相似列表
-    fixed_item_id = "050552533X"
-    debug_item_sim(item_info, sim_info, fixed_item_id)
-
-    # 输出 user 的推荐结果
-    user_id = '246671'
-    debug_recom_result(recom_result, item_info, user_id)
-
-
-def get_item_sim_info(item_id):
-    user_like = reader.get_user_like("./data/ratings.csv")
-
-    sim_info = cal_item_sim(user_like)
-
-    return json.dumps(sim_info[item_id])
-
-
-def get_item_by_id(item_id):
-    item_full_info = reader.get_item_full_info("./data/Books1.csv")
-
-    return item_full_info[item_id]
-
-
-def get_user_recom_result(user_id):
-    user_like = reader.get_user_like("./data/Ratings1.csv")
-    user_rate = reader.get_user_rate("./data/Ratings1.csv")
-    item_full_info = reader.get_item_full_info("./data/Books1.csv")
-
+def get_user_recom_result(user_id, user_like, user_rate, item_full_info):
     sim_info = cal_item_sim(user_like)
 
     recom_result = cal_recom_result(sim_info, user_rate)
@@ -85,77 +38,6 @@ def get_user_recom_result(user_id):
     recom_dict["recom_result"] = recom_info_list
 
     return recom_dict
-
-
-def debug_item_sim(item_info, sim_info, fixed_item_id):
-    """
-    show item similar info
-    输出给定物品的相似度信息
-    Args:
-        item_info: dict, key:item_id, value: [title, author]
-        sim_info: dict, key:item_id,
-            value: dict, value_key [(item_id_1, sim_score), (item_id_2, sim_score), ...]
-    """
-
-    if fixed_item_id not in item_info:
-        print("invalid item_id")
-        return
-
-    [title_fix, author_fix] = item_info[fixed_item_id]
-
-    author_sim_list = []
-    title_sim_list = []
-    sim_score_list = []
-    tmp_dict = {}
-    for pair in sim_info[fixed_item_id]:
-        item_id_sim = pair[0]
-        sim_score = pair[1]
-        if item_id_sim not in item_info:
-            continue
-        [title_sim, author_sim] = item_info[item_id_sim]
-        title_sim_list.append(title_sim)
-        author_sim_list.append(author_sim)
-        sim_score_list.append(sim_score)
-
-    tmp_dict = {"title_sim": title_sim_list,
-                "author_sim": author_sim_list, "sim_score": sim_score_list}
-    # 字典转化为表格输出
-    table = pd.DataFrame.from_dict(tmp_dict)
-    print(table)
-
-
-def debug_recom_result(recom_result, item_info, user_id):
-    """
-    debug recom result
-    输出给定用户的推荐信息
-    Args:
-        recom_result: key: user_id value: dict, value_key: item_id, value_value: recom_score
-        item_info: dict, item_id, value:[title, author]
-    """
-
-    if user_id not in recom_result:
-        print("invalid user_id")
-        return
-
-    item_title_list = []
-    item_author_list = []
-    recom_score_list = []
-    tmp_dict = {}
-    for pair in recom_result[user_id]:
-        item_id = pair[0]
-        recom_score = pair[1]
-        if item_id not in item_info:
-            continue
-        [item_title, item_author] = item_info[item_id]
-        item_title_list.append(item_title)
-        item_author_list.append(item_author)
-        recom_score_list.append(recom_score)
-
-    tmp_dict = {"item_title": item_title_list,
-                "item_author": item_author_list, "recom_score": recom_score_list}
-    # 字典转化为表格输出
-    recom_table = pd.DataFrame.from_dict(tmp_dict)
-    print(recom_table)
 
 
 def base_contribute_score():
@@ -212,9 +94,8 @@ def cal_item_sim(user_like):
     item_sim_score_sorted = {}
     for item_id_i, relate_item in co_appear.items():
         for item_id_j, co_count in relate_item.items():
-            sim_score = co_count / \
-                        math.sqrt(
-                            item_user_like_count[item_id_i] * item_user_like_count[item_id_j])
+            sim_score = co_count / math.sqrt(
+                item_user_like_count[item_id_i] * item_user_like_count[item_id_j])
             item_sim_score.setdefault(item_id_i, {})
             item_sim_score[item_id_i].setdefault(item_id_j, 0)
             # 存储 item_i 对 item_j 的相似度得分
@@ -264,7 +145,3 @@ def cal_recom_result(sim_info, user_rate):
             recom_info[user_id].items(), key=operator.itemgetter(1), reverse=True)
 
     return recom_info_sorted
-
-
-if __name__ == "__main__":
-    main_flow()
