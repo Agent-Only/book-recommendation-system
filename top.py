@@ -52,4 +52,5 @@ def get_top_book():
 
 
 if __name__ == "__main__":
-    get_top_book()
+    top = get_top_book()
+    print(top)

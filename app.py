@@ -3,6 +3,7 @@ import json
 from flask import Flask, request
 from flask_cors import *
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 
 import itemcf
 import top
@@ -128,6 +129,105 @@ def recoms_by_user(user_id):
     else:
         response['status'] = 'fail'
         response['data'] = {}
+
+    return json.dumps(response)
+
+
+# 查询用户的评分列表
+@app.route('/rating/me/<user_id>')
+def show_specific_user_rate(user_id):
+    ratings = Rating.query.filter_by(user_id=user_id)
+    print(ratings)
+    rating_list = []
+    response = {}
+    for row in ratings:
+        tmp_dict = Rating.as_dict(row)
+        # 过滤评分为 0 的图书
+        if tmp_dict['score'] == '0':
+            continue
+        rating_list.append(tmp_dict)
+
+    if ratings is not []:
+        response['status'] = 'success'
+        response['data'] = rating_list
+
+    return json.dumps(response)
+
+
+# 添加用户评分
+@app.route('/rating/add', methods=['POST'])
+def add_rate():
+    user_id = request.form['userId']
+    book_id = request.form['bookId']
+    score = request.form['score']
+
+    rating = Rating.query.filter_by(user_id=user_id, book_id=book_id).first()
+
+    if rating is not None:
+        rating.score = score
+    else:
+        db.session.add(Rating(user_id=user_id, book_id=book_id, score=score))
+
+    db.session.commit()
+
+    response = {'status': 'success'}
+
+    return json.dumps(response)
+
+
+# 根据字段查询书籍
+@app.route('/book/search/<content>')
+def search_book(content):
+    rows = Book.query.filter(
+        or_(Book.id.like("%" + content + "%") if content is not None else "",
+            Book.title.like("%" + content + "%") if content is not None else "",
+            Book.author.like("%" + content + "%") if content is not None else "",
+            Book.publisher.like("%" + content + "%") if content is not None else "",
+            Book.year.like("%" + content + "%") if content is not None else "")
+    ).limit(100)
+
+    response = {}
+    book_list = []
+    for row in rows:
+        book_list.append(Book.as_dict(row))
+
+    if len(book_list) is not 0:
+        response['status'] = 'success'
+        response['data'] = book_list
+    else:
+        response['status'] = 'fail'
+        response['data'] = {}
+
+    return json.dumps(response)
+
+
+# 查询用户对某本书的评分
+@app.route('/rating/user/<user_id>/<book_id>')
+def rating_user_book(user_id, book_id):
+    row = Rating.query.filter_by(user_id=user_id, book_id=book_id).first()
+
+    response = {}
+    if row is not None:
+        rating = Rating.as_dict(row)
+        response = {'status': 'success', 'data': rating}
+
+    else:
+        response = {'status': 'null', 'data': {}}
+
+    return json.dumps(response)
+
+
+@app.route('/test')
+def test_user():
+    rows = User.query.filter(
+        User.location.like("%" + "new" + "%") if "new" is not None else ""
+    ).all()
+    response = {}
+    user_list = []
+    for row in rows:
+        user_list.append(User.as_dict(row))
+
+    response['data'] = user_list
 
     return json.dumps(response)
 
