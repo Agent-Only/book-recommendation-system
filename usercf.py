@@ -5,37 +5,8 @@ user cf main Algorithm
 import math
 import operator
 
-import pandas as pd
 
-import util.reader as reader
-
-
-def main_flow():
-    """
-    main flow of user cf
-    """
-    user_rate = reader.get_user_rate("./data/Ratings1.csv")
-    item_full_info = reader.get_item_full_info("./data/Books1.csv")
-
-    item_rate_by_user = transfer_user_rate(user_rate)
-    # 计算 user 相似度
-    user_sim = cal_user_sim(item_rate_by_user)
-    # 根据 user 评分, 和 user 的相似度, 得出推荐结果
-    recom_result = cal_recom_result(user_rate, user_sim)
-
-    user_id = "250405"
-    # 测试用户相似度
-    # debug_user_sim(user_sim, user_id)
-    # 测试用户推荐结果
-    # debug_recom_result(recom_result, user_id)
-
-    get_user_recom_result(user_id)
-
-
-def get_user_recom_result(user_id):
-    user_rate = reader.get_user_rate("./data/Ratings1.csv")
-    item_full_info = reader.get_item_full_info("./data/Books1.csv")
-
+def get_user_recom_result(user_id, user_rate, item_full_info):
     item_rate_by_user = transfer_user_rate(user_rate)
     user_sim = cal_user_sim(item_rate_by_user)
     recom_result = cal_recom_result(user_rate, user_sim)
@@ -61,54 +32,6 @@ def get_user_recom_result(user_id):
     # print(recom_dict)
 
     return recom_dict
-
-
-def debug_user_sim(user_sim, user_id):
-    """
-    show user_sim
-    Args:
-      user_sim: dict, key: user_id_i, value: [(user_id_j, score_1), (user_id_k, score_2), ...]
-      user_id: str
-    Return:
-      Null
-    """
-    user_sim_list = user_sim[user_id]
-    user_id_list = []
-    sim_score_list = []
-    tmp_dict = {}
-
-    # 转换为表格
-    for pair in user_sim_list:
-        user_id_j = pair[0]
-        sim_score = pair[1]
-        user_id_list.append(user_id_j)
-        sim_score_list.append(sim_score)
-    tmp_dict = {"user_id": user_id_list, "sim_score": sim_score_list}
-    table = pd.DataFrame.from_dict(tmp_dict)
-    print(table)
-
-
-def debug_recom_result(recom_result, user_id):
-    """  
-    show recom_result
-    Args:
-      recom_result: dict, key: user_id, value: dict, value_key: item_id, value_value: recom_score
-      user_id: str
-    Return:
-      Null
-    """
-    recom_dict = recom_result[user_id]
-    recom_item_list = []
-    recom_score_list = []
-    tmp_dict = {}
-
-    # 转换为表格输出
-    for recom_item, recom_score in recom_dict.items():
-        recom_item_list.append(recom_item)
-        recom_score_list.append(recom_score)
-    tmp_dict = {"recom_item": recom_item_list, "recom_score": recom_score_list}
-    table = pd.DataFrame.from_dict(tmp_dict)
-    print(table)
 
 
 def transfer_user_rate(user_rate):
@@ -160,11 +83,10 @@ def cal_user_sim(item_rate_by_user):
     user_sim_info_sorted = {}
     for user_id_i, relate_user in co_appear.items():
         user_sim_info.setdefault(user_id_i, {})
-        for user_id_j, conum in relate_user.items():
+        for user_id_j, co_num in relate_user.items():
             user_sim_info[user_id_i].setdefault(user_id_j, 0)
-            user_sim_info[user_id_i][user_id_j] = conum / \
-                                                  math.sqrt(user_rate_count[user_id_i]
-                                                            * user_rate_count[user_id_j])
+            user_sim_info[user_id_i][user_id_j] = co_num / math.sqrt(user_rate_count[user_id_i]
+                                                                     * user_rate_count[user_id_j])
     # 排序
     for user_id in user_sim_info:
         user_sim_info_sorted[user_id] = sorted(
@@ -228,7 +150,3 @@ def update_contribute_score(item_user_rate_count):
         contribution score
     """
     return 1 / math.log10(1 + item_user_rate_count)
-
-
-if __name__ == "__main__":
-    main_flow()
