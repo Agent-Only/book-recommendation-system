@@ -70,17 +70,17 @@ def login():
 
     if login_user is not None:
         if login_user.password == password:
-            response['status'] = 'success'
+            response['ok'] = True
             response['data'] = User.as_dict(login_user)
             return json.dumps(response)
 
         else:
-            response['status'] = 'fail'
+            response['ok'] = False
             response['errMsg'] = '密码不正确'
             return json.dumps(response)
 
     else:
-        response['status'] = 'fail'
+        response['ok'] = False
         response['errMsg'] = '用户名不存在'
         return json.dumps(response)
 
@@ -91,10 +91,10 @@ def show_top():
     response = {}
     data = top.get_top_book()
     if data != {}:
-        response["status"] = "success"
+        response['ok'] = True
         response["data"] = data
     else:
-        response["status"] = "fail"
+        response["ok"] = False
         response["data"] = {}
 
     return json.dumps(response)
@@ -107,10 +107,11 @@ def recoms_by_item(user_id):
     data = itemcf.get_user_recom_result(
         user_id, user_like=get_user_like(), user_rate=get_user_rate(), item_full_info=get_item_info())
     if data != {}:
-        response["status"] = "success"
+        response['ok'] = True
+
         response["data"] = data
     else:
-        response["status"] = "fail"
+        response["ok"] = False
         response["data"] = {}
 
     return json.dumps(response)
@@ -124,10 +125,11 @@ def recoms_by_user(user_id):
     data = usercf.get_user_recom_result(
         user_id, user_rate=get_user_rate(), item_full_info=get_item_info())
     if data != {}:
-        response['status'] = "success"
+        response['ok'] = True
+
         response['data'] = data
     else:
-        response['status'] = 'fail'
+        response['ok'] = False
         response['data'] = {}
 
     return json.dumps(response)
@@ -148,7 +150,7 @@ def show_specific_user_rate(user_id):
         rating_list.append(tmp_dict)
 
     if ratings is not []:
-        response['status'] = 'success'
+        response['ok'] = True
         response['data'] = rating_list
 
     return json.dumps(response)
@@ -170,7 +172,7 @@ def add_rate():
 
     db.session.commit()
 
-    response = {'status': 'success'}
+    response = {'ok': True}
 
     return json.dumps(response)
 
@@ -180,9 +182,12 @@ def add_rate():
 def search_book(content):
     rows = Book.query.filter(
         or_(Book.id.like("%" + content + "%") if content is not None else "",
-            Book.title.like("%" + content + "%") if content is not None else "",
-            Book.author.like("%" + content + "%") if content is not None else "",
-            Book.publisher.like("%" + content + "%") if content is not None else "",
+            Book.title.like(
+                "%" + content + "%") if content is not None else "",
+            Book.author.like(
+                "%" + content + "%") if content is not None else "",
+            Book.publisher.like(
+                "%" + content + "%") if content is not None else "",
             Book.year.like("%" + content + "%") if content is not None else "")
     ).limit(100)
 
@@ -192,10 +197,10 @@ def search_book(content):
         book_list.append(Book.as_dict(row))
 
     if len(book_list) is not 0:
-        response['status'] = 'success'
+        response['ok'] = True
         response['data'] = book_list
     else:
-        response['status'] = 'fail'
+        response['ok'] = False
         response['data'] = {}
 
     return json.dumps(response)
@@ -209,10 +214,10 @@ def rating_user_book(user_id, book_id):
     response = {}
     if row is not None:
         rating = Rating.as_dict(row)
-        response = {'status': 'success', 'data': rating}
+        response = {'ok': True, 'data': rating}
 
     else:
-        response = {'status': 'null', 'data': {}}
+        response = {'ok': False, 'data': {}}
 
     return json.dumps(response)
 
@@ -236,7 +241,7 @@ def test_user():
 def show_user_like():
     rows = Rating.query.all()
     rating_list = []
-    for row in rows:
+    for row in rows[:1000]:
         rating_list.append(Rating.as_dict(row))
     user_like_dict = reader.get_user_like(rating_list)
 
@@ -247,7 +252,7 @@ def show_user_like():
 def show_user_rate():
     rows = Rating.query.all()
     rating_list = []
-    for row in rows:
+    for row in rows[:1000]:
         rating_list.append(Rating.as_dict(row))
     user_rate_dict = reader.get_user_rate(rating_list)
 
@@ -258,7 +263,7 @@ def show_user_rate():
 def show_item_info():
     rows = Book.query.all()
     book_list = []
-    for row in rows:
+    for row in rows[:1000]:
         book_list.append(Book.as_dict(row))
     item_info_dict = reader.get_item_full_info(book_list)
 
@@ -273,7 +278,7 @@ def user_query_all():
     for row in rows[:100]:
         user_list.append(User.as_dict(row))
 
-    response['status'] = 'success'
+    response['ok'] = True
     response['data'] = user_list
 
     return json.dumps(response)
@@ -287,7 +292,7 @@ def book_query_all():
     for row in rows[:100]:
         book_list.append(Book.as_dict(row))
 
-    response['status'] = 'success'
+    response['ok'] = True
     response['data'] = book_list
 
     return json.dumps(response)
@@ -301,7 +306,7 @@ def rating_query_all():
     for row in rows[:100]:
         rating_list.append(Rating.as_dict(row))
 
-    response['status'] = 'success'
+    response['ok'] = True
     response['data'] = rating_list
 
     return json.dumps(response)
