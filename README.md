@@ -273,8 +273,10 @@ def search_book(content):
 
 ##### 下载项目
 
-```
+```shell
 git clone https://github.com/ShiroCheng/vue-admin-vuetify.git
+# 切换分支
+git checkout Book-Recommend-Flask-backend
 cd vue-admin-vuetify
 ```
 

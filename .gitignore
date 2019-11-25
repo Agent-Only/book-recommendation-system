@@ -2,7 +2,7 @@
 
 /util/__pycache__
 
-/.vscode
+# /.vscode
 
 .DS_Store
 /__pycache__
