@@ -12,21 +12,37 @@
 
 
 
-### 需求分析
+### 概述
 
-实现一个简单的图书推荐系统，可以在已有的数据源上对用户进行简单的图书推荐。
+一个简单的图书推荐系统，可在现有数据源上对用户进行简单的图书推荐。
 
-支持用户实时添加评分，并更新推荐结果。
+支持用户添加和更新评分，并更新推荐结果。
 
-### 详细设计
+### 实现
 
-项目的前端总体实现比较简单，由于 vuetify 本身是成熟的响应式框架，我在样式和布局上主要通过修改一些组件的预设完成。主要的工作在前后端跨域请求数据和前端的用户状态管理问题。
+前端实现较简单， vuetify 本身是成熟的响应式框架，我只在样式和布局上修改一些组件的预设。
 
-#### 技术栈
+主要的工作在前后端跨域请求数据和前端的用户状态管理问题。
+
+#### 项目组成
 
 ```
 Vue + Vuetify + Flask + SQLAlchemy + mysql
 ```
+
+#### 前端依赖
+
+1. 组件样式: `vuetify`, `material-design-icons-iconfont`
+2. 路由处理: `vue-router`
+3. ajax 请求: `axios`
+4. 时间处理: `moment`
+
+#### 后端依赖
+
+1. Web框架：`Flask`
+2. 处理跨域请求：`flask_cors`
+3. 数据库ORM框架：`Flask-SQLAlchemy`
+4. 数据处理：`Pandas`, `Numpy`, `math`, `operator`
 
 #### 开发工具
 
@@ -38,23 +54,17 @@ Vue + Vuetify + Flask + SQLAlchemy + mysql
 
 数据库：`Mysql 8.0.15`, `redis 5.0.5`
 
-#### 前端依赖库
 
-1. 组件样式: `vuetify`, `material-design-icons-iconfont`
-2. 路由处理: `vue-router`
-3. ajax 请求: `axios`
-4. 时间处理: `moment`
 
-#### 后端依赖库
+### 数据源
 
-1. Web框架：`Flask`
-2. 处理跨域请求：`flask_cors`
-3. 数据库ORM框架：`Flask-SQLAlchemy`
-4. 数据处理：`Pandas`, `Numpy`, `math`, `operator`
+数据源下载地址：http://www2.informatik.uni-freiburg.de/~cziegler/BX/
+
+使用的数据源来自开源的 2004 年的图书数据库，原始文件为 CSV 格式。
 
 #### 数据库表结构
 
-使用了 MySQL 数据库，主要为 Book，User，Rating 表，Book 表为图书基本信息，User 表为用户基本信息，Rating 表为用户对特定图书的评分。
+使用 MySQL 数据库，共三张表 Book，User，Rating，Book 表为图书基本信息，User 表为用户基本信息，Rating 表为用户对特定图书的评分。
 
 ##### ER 图：
 
@@ -62,11 +72,7 @@ Vue + Vuetify + Flask + SQLAlchemy + mysql
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | ![Screen Shot 2019-07-15 at 10.26.22 AM](http://ww4.sinaimg.cn/large/006tNc79ly1g50c7o4z3qj30ms0pi77h.jpg) | ![Screen Shot 2019-07-15 at 10.26.05 AM](http://ww2.sinaimg.cn/large/006tNc79ly1g50c7sifqsj30l40d2myj.jpg) |
 
-数据源：http://www2.informatik.uni-freiburg.de/~cziegler/BX/
-
-使用的数据源来自网络上开源 2004 年的图书数据库，下载的原始文件为 CSV 格式。
-
-处理的数据量较大，Book 表和 User 表的数据约为 30万行，导入数据库后预览如下：
+数据量较大，Book 表和 User 表的数据约 30万行，导入后预览如下：
 
 | User 表                                                      | Book 表                                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -76,15 +82,15 @@ Vue + Vuetify + Flask + SQLAlchemy + mysql
 
 
 
-### 推荐系统实现
+### 功能实现
 
 #### 数据预处理
 
-使用 Python 的 Pandas 库，对 CSV 文件进行了行遍历，过滤了一些字段中编码非 utf-8 与数据列数目不正确的列，再使用 Navicat 的 Import Wizard 工具将 CSV 文件导入为 MySQL 表格。
+使用 Python 的 Pandas 库，对 CSV 文件进行了行遍历，过滤了一些字段中编码非 utf-8 与数据列数目不正确的列，再使用 Navicat 的 Import Wizard 工具将 CSV 文件导入为 MySQL Table。
 
 #### 用户登陆
 
-前台向后台发送登陆表单的信息，同时接受后台发送的用户详细信息存储在浏览器本地缓存(localStorage), 以在前端显示用户头像，用户名等.
+前台向后台发送登陆表单的信息，同时接受后台发送的用户详细信息存储在浏览器本地缓存(localStorage), 以在前端显示用户头像，用户名等 Profile.
 
 ```javascript
 login() {
@@ -141,7 +147,7 @@ def login():
 
 前端以表单形式添加一条评价记录，后端通过获取参数使用数据库方法查询是否已有评分记录，已有则更新评分，否则新建评分。
 
-前台使用 post 方法发送表单数据：
+前端使用 post 方法发送表单数据：
 
 ```javascript
 // 发送用户评分请求
@@ -167,7 +173,7 @@ addRate() {
     },
 ```
 
-设置后台响应：
+后端响应：
 
 ```python
 # 添加用户评分
@@ -195,7 +201,7 @@ def add_rate():
 similar[i][j] = u(i) ∩ u(j) / sqrt(u(i) * u(j))
 predict[u][j] = ∑( i ∊ n(u) ∩ similar(j, k) ) similar[i][j] * rate[u][i]
 ```
-算法的主要的步骤是计算相似度然后根据相似度排序，对用户的行为进行遍历，形成推荐列表。
+推荐算法为协同过滤。计算相似度然后根据相似度排序，对用户的行为进行遍历，形成推荐列表。
 
 **相似度中贡献度的计算函数：**
 
@@ -262,14 +268,16 @@ def search_book(content):
 ```
 
 
+
 ### 项目构建
 
 #### 前端
 
 ##### 下载项目
 
-```
+```bash
 git clone https://github.com/ShiroCheng/vue-admin-vuetify.git
+git checkout Book-Recommend-Flask-backend
 cd vue-admin-vuetify
 ```
 
@@ -329,7 +337,7 @@ pip install flask flask_cors flask-sqlalchemy pandas numpy sqlalchemy
 
 ##### 运行 Flask
 
-```shell
+```bash
 python app.py
 ```
 
