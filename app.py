@@ -1,13 +1,14 @@
 import json
 
-import itemcf
-import top
-import usercf
-import util.db_reader as reader
 from flask import Flask, request
 from flask_cors import *
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
+
+import itemcf
+import top
+import usercf
+import util.db_reader as reader
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
