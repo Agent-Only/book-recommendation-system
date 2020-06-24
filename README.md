@@ -2,21 +2,68 @@
 
 ### 截图
 
-| 图书首页                                                     | 模糊搜索                                                     |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![Screen Shot 2019-07-15 at 1.27.19 AM](http://ww3.sinaimg.cn/large/006tNc79ly1g50c7pdxstj31bf0u0x1e.jpg) | ![Screen Shot 2019-07-15 at 1.28.33 AM](http://ww4.sinaimg.cn/large/006tNc79ly1g50c7rsln4j31bf0u0wrt.jpg) |
-| 图书评分                                                     | 图书推荐                                                     |
-| ![Screen Shot 2019-07-15 at 1.27.39 AM](http://ww3.sinaimg.cn/large/006tNc79ly1g50c7s9se7j31bf0u0wnf.jpg) | ![Screen Shot 2019-07-15 at 1.37.28 AM](http://ww2.sinaimg.cn/large/006tNc79ly1g50c7tabfxj31bf0u01kx.jpg) |
-| 个人信息                                                     |                                                              |
-| ![Screen Shot 2019-07-15 at 1.37.46 AM](http://ww3.sinaimg.cn/large/006tNc79ly1g50c7tjx7hj31bf0u00z8.jpg) |                                                              |
-
-
+| 图书首页                                                                                                   | 模糊搜索                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| ![Screen Shot 2019-07-15 at 1.27.19 AM](https://ww3.sinaimg.cn/large/006tNc79ly1g50c7pdxstj31bf0u0x1e.jpg) | ![Screen Shot 2019-07-15 at 1.28.33 AM](https://ww4.sinaimg.cn/large/006tNc79ly1g50c7rsln4j31bf0u0wrt.jpg) |
+| 图书评分                                                                                                   | 图书推荐                                                                                                   |
+| ![Screen Shot 2019-07-15 at 1.27.39 AM](https://ww3.sinaimg.cn/large/006tNc79ly1g50c7s9se7j31bf0u0wnf.jpg) | ![Screen Shot 2019-07-15 at 1.37.28 AM](https://ww2.sinaimg.cn/large/006tNc79ly1g50c7tabfxj31bf0u01kx.jpg) |
+| 个人信息                                                                                                   |                                                                                                            |
+| ![Screen Shot 2019-07-15 at 1.37.46 AM](https://ww3.sinaimg.cn/large/006tNc79ly1g50c7tjx7hj31bf0u00z8.jpg) |                                                                                                            |
 
 ### 概述
 
 一个简单的图书推荐系统，可在现有数据源上对用户进行简单的图书推荐。
 
 支持用户添加和更新评分，并更新推荐结果。
+
+### 构建项目
+
+#### 前端
+
+##### 下载项目
+
+```bash
+git clone httpss://github.com/ShiroCheng/vue-admin-vuetify.git
+git checkout Book-Recommend-Flask-backend
+cd vue-admin-vuetify
+```
+
+##### 安装依赖
+
+```shell
+npm install
+```
+
+##### 以开发模式(热加载)启动
+
+```shell
+npm run serve
+```
+
+打开 [https://localhost:3000](https://localhost:3000/) 查看 demo
+
+#### 后端
+
+##### 下载项目
+
+```shell
+git clone httpss://github.com/ShiroCheng/Book_Recommend_System.git
+cd  Book_Recommend_System
+```
+
+##### 配置依赖
+
+```shell
+pipenv install
+# or
+pip install -r requirements
+```
+
+##### 运行 Flask
+
+```bash
+python app.py
+```
 
 ### 实现
 
@@ -39,26 +86,24 @@ Vue + Vuetify + Flask + SQLAlchemy + mysql
 
 #### 后端依赖
 
-1. Web框架：`Flask`
+1. Web 框架：`Flask`
 2. 处理跨域请求：`flask_cors`
-3. 数据库ORM框架：`Flask-SQLAlchemy`
+3. 数据库 ORM 框架：`Flask-SQLAlchemy`
 4. 数据处理：`Pandas`, `Numpy`, `math`, `operator`
 
 #### 开发工具
 
 操作系统：`MacOS 10.14.15`
 
-前端IDE：`Visual Studio Code`
+前端 IDE：`Visual Studio Code`
 
-后端IDE:  `Pycharm`
+后端 IDE: `Pycharm`
 
 数据库：`Mysql 8.0.15`, `redis 5.0.5`
 
-
-
 ### 数据源
 
-数据源下载地址：http://www2.informatik.uni-freiburg.de/~cziegler/BX/
+数据源下载地址：https://www2.informatik.uni-freiburg.de/~cziegler/BX/
 
 使用的数据源来自开源的 2004 年的图书数据库，原始文件为 CSV 格式。
 
@@ -68,19 +113,17 @@ Vue + Vuetify + Flask + SQLAlchemy + mysql
 
 ##### ER 图：
 
-| Navicat 生成                                                 | DBViewer生成                                                 |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![Screen Shot 2019-07-15 at 10.26.22 AM](http://ww4.sinaimg.cn/large/006tNc79ly1g50c7o4z3qj30ms0pi77h.jpg) | ![Screen Shot 2019-07-15 at 10.26.05 AM](http://ww2.sinaimg.cn/large/006tNc79ly1g50c7sifqsj30l40d2myj.jpg) |
+| Navicat 生成                                                                                                | DBViewer 生成                                                                                               |
+| ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| ![Screen Shot 2019-07-15 at 10.26.22 AM](https://ww4.sinaimg.cn/large/006tNc79ly1g50c7o4z3qj30ms0pi77h.jpg) | ![Screen Shot 2019-07-15 at 10.26.05 AM](https://ww2.sinaimg.cn/large/006tNc79ly1g50c7sifqsj30l40d2myj.jpg) |
 
-数据量较大，Book 表和 User 表的数据约 30万行，导入后预览如下：
+数据量较大，Book 表和 User 表的数据约 30 万行，导入后预览如下：
 
-| User 表                                                      | Book 表                                                      |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![Screen Shot 2019-07-15 at 1.44.06 AM](http://ww1.sinaimg.cn/large/006tNc79ly1g50c7p0rq1j31c00u04qp.jpg) | ![Screen Shot 2019-07-15 at 1.43.52 AM](http://ww4.sinaimg.cn/large/006tNc79ly1g50c7qj0w7j31c00u0hdt.jpg) |
-| Rating 表                                                    |                                                              |
-| ![Screen Shot 2019-07-15 at 1.43.59 AM](http://ww2.sinaimg.cn/large/006tNc79ly1g50c7u7p4cj31c00u018k.jpg) |                                                              |
-
-
+| User 表                                                                                                    | Book 表                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| ![Screen Shot 2019-07-15 at 1.44.06 AM](https://ww1.sinaimg.cn/large/006tNc79ly1g50c7p0rq1j31c00u04qp.jpg) | ![Screen Shot 2019-07-15 at 1.43.52 AM](https://ww4.sinaimg.cn/large/006tNc79ly1g50c7qj0w7j31c00u0hdt.jpg) |
+| Rating 表                                                                                                  |                                                                                                            |
+| ![Screen Shot 2019-07-15 at 1.43.59 AM](https://ww2.sinaimg.cn/large/006tNc79ly1g50c7u7p4cj31c00u018k.jpg) |                                                                                                            |
 
 ### 功能实现
 
@@ -94,10 +137,10 @@ Vue + Vuetify + Flask + SQLAlchemy + mysql
 
 ```javascript
 login() {
-      Vue.prototype.$http
+      Vue.prototype.$https
         .post("/login", this.userInfo)
         .then(response => {
-          if (response.data.status == "success") {
+          if (response.data.ok == true) {
             // 存储登陆信息在客户端浏览器中
             let userFullInfo = response.data.data;
             localStorage.setItem("LOGIN_USER", JSON.stringify(userFullInfo));
@@ -128,20 +171,18 @@ def login():
     login_user = User.query.filter_by(id=user_id).first()
     if login_user is not None:
         if login_user.password == password:
-            response['status'] = 'success'
+            response['ok'] = True
             response['data'] = User.as_dict(login_user)
             return json.dumps(response)
         else:
-            response['status'] = 'fail'
+            response['ok'] = False
             response['errMsg'] = '密码不正确'
             return json.dumps(response)
     else:
-        response['status'] = 'fail'
+        response['ok'] = False
         response['errMsg'] = '用户名不存在'
         return json.dumps(response)
 ```
-
-
 
 #### 添加评价
 
@@ -157,10 +198,10 @@ addRate() {
       this.form.bookId = this.item.item_id;
       this.form.score = this.rating * 2; // 0～5分制 => 0~10分制
       console.log(this.form);
-      Vue.prototype.$http
+      Vue.prototype.$https
         .post("/rating/add", this.form)
         .then(response => {
-          if (response.data.status == "success") {
+          if (response.data.ok == True) {
             this.message = "评价成功";
            ...
           } else {
@@ -188,11 +229,9 @@ def add_rate():
     else:
         db.session.add(Rating(user_id=user_id, book_id=book_id, score=score))
     db.session.commit()
-    response = {'status': 'success'}
+    response = {'ok': True}
     return json.dumps(response)
 ```
-
-
 
 #### 基于协同过滤推荐
 
@@ -201,6 +240,7 @@ def add_rate():
 similar[i][j] = u(i) ∩ u(j) / sqrt(u(i) * u(j))
 predict[u][j] = ∑( i ∊ n(u) ∩ similar(j, k) ) similar[i][j] * rate[u][i]
 ```
+
 推荐算法为协同过滤。计算相似度然后根据相似度排序，对用户的行为进行遍历，形成推荐列表。
 
 **相似度中贡献度的计算函数：**
@@ -243,8 +283,6 @@ def cal_item_sim(user_like):
       return item_sim_score_sorted
 ```
 
-
-
 #### 模糊搜索
 
 使用数据库中间件封装完成的方法对数据库中的所有字段进行遍历，相似的行转化为为列表输出。
@@ -266,78 +304,3 @@ def search_book(content):
 
     return json.dumps(response)
 ```
-
-
-### 项目构建
-
-#### 前端
-
-##### 下载项目
-
-```bash
-git clone https://github.com/ShiroCheng/vue-admin-vuetify.git
-git checkout Book-Recommend-Flask-backend
-cd vue-admin-vuetify
-```
-
-##### 安装依赖
-
-```shell
-npm install
-```
-
-##### 以开发模式(热加载)启动
-
-```shell
-npm run serve
-```
-
-打开 [http://localhost:3000](http://localhost:3000/) 查看 demo
-
-如果热加载失败 更改 `vue.config.js`
-
-```javascript
-module.exports = {
-  chainWebpack: config => {
-    config.resolve
-      .symlinks(true)
-  }
-}
-```
-
-##### 以生产模式启动
-
-```shell
-npm run build
-```
-
-##### 提示和修复文件
-
-```shell
-npm run lint
-```
-
-#### 后端
-
-##### 下载项目
-
-```shell
-git clone https://github.com/ShiroCheng/Book_Recommend_System.git
-cd  Book_Recommend_System
-```
-
-##### 配置依赖
-
-````shell
-conda create -n book_system python=3.6
-source activate book_system (Unix) / activate book_system (Windows)
-pip install flask flask_cors flask-sqlalchemy pandas numpy sqlalchemy 
-````
-
-##### 运行 Flask
-
-```bash
-python app.py
-```
-
-
