@@ -1,14 +1,13 @@
 import json
 
-from flask import Flask, request
-from flask_cors import *
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
-
 import itemcf
 import top
 import usercf
 import util.db_reader as reader
+from flask import Flask, request
+from flask_cors import *
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -84,6 +83,11 @@ def login():
         response['errMsg'] = '用户名不存在'
         return json.dumps(response)
 
+    if login_user is not None:
+        if login_user.password == password:
+            response['ok'] = True
+            response['data'] = User.as_dict(login_user)
+            return json.dumps(response)
 
 # 显示热门图书
 @app.route('/top')
@@ -91,7 +95,7 @@ def show_top():
     response = {}
     data = top.get_top_book()
     if data != {}:
-        response['ok'] = True
+        response["ok"] = True
         response["data"] = data
     else:
         response["ok"] = False
@@ -107,8 +111,7 @@ def recoms_by_item(user_id):
     data = itemcf.get_user_recom_result(
         user_id, user_like=get_user_like(), user_rate=get_user_rate(), item_full_info=get_item_info())
     if data != {}:
-        response['ok'] = True
-
+        response["ok"] = True
         response["data"] = data
     else:
         response["ok"] = False
@@ -126,7 +129,6 @@ def recoms_by_user(user_id):
         user_id, user_rate=get_user_rate(), item_full_info=get_item_info())
     if data != {}:
         response['ok'] = True
-
         response['data'] = data
     else:
         response['ok'] = False
@@ -182,12 +184,9 @@ def add_rate():
 def search_book(content):
     rows = Book.query.filter(
         or_(Book.id.like("%" + content + "%") if content is not None else "",
-            Book.title.like(
-                "%" + content + "%") if content is not None else "",
-            Book.author.like(
-                "%" + content + "%") if content is not None else "",
-            Book.publisher.like(
-                "%" + content + "%") if content is not None else "",
+            Book.title.like("%" + content + "%") if content is not None else "",
+            Book.author.like("%" + content + "%") if content is not None else "",
+            Book.publisher.like("%" + content + "%") if content is not None else "",
             Book.year.like("%" + content + "%") if content is not None else "")
     ).limit(100)
 
@@ -241,7 +240,7 @@ def test_user():
 def show_user_like():
     rows = Rating.query.all()
     rating_list = []
-    for row in rows[:1000]:
+    for row in rows:
         rating_list.append(Rating.as_dict(row))
     user_like_dict = reader.get_user_like(rating_list)
 
