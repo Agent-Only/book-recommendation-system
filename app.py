@@ -1,58 +1,23 @@
 import json
 
+from flask import Flask, request
+from flask_cors import *
+from sqlalchemy import or_
+
 import itemcf
 import top
 import usercf
 import util.db_reader as reader
-from flask import Flask, request
-from flask_cors import *
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
+from config import config
+from models import Book, Rating, User, db
 
 app = Flask(__name__)
-app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/book'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_ECHO'] = True
-db = SQLAlchemy(app)
-
+# CORS request enable
 CORS(app, supports_credentials=True)
-
-
-class User(db.Model):
-    # as_dict 实现对象序列化
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    id = db.Column(db.String, primary_key=True)
-    password = db.Column(db.String, unique=False, nullable=False)
-    location = db.Column(db.String, unique=False, nullable=False)
-    age = db.Column(db.String, unique=False, nullable=False)
-    avatar_url = db.Column(db.String, unique=False, nullable=False)
-
-
-class Book(db.Model):
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    id = db.Column(db.String, primary_key=True)
-    title = db.Column(db.String, unique=False, nullable=False)
-    author = db.Column(db.String, unique=False, nullable=False)
-    year = db.Column(db.String, unique=False, nullable=False)
-    publisher = db.Column(db.String, unique=False, nullable=False)
-    img_url_s = db.Column(db.String, unique=False, nullable=False)
-    img_url_m = db.Column(db.String, unique=False, nullable=False)
-    img_url_l = db.Column(db.String, unique=False, nullable=False)
-
-
-class Rating(db.Model):
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String, unique=False, nullable=False)
-    book_id = db.Column(db.String, unique=False, nullable=False)
-    score = db.Column(db.String, unique=False, nullable=False)
+# read config from file
+app.config.from_object(config['development'])
+# init app use database setup
+db.init_app(app)
 
 
 @app.route('/')
@@ -90,6 +55,8 @@ def login():
             return json.dumps(response)
 
 # 显示热门图书
+
+
 @app.route('/top')
 def show_top():
     response = {}
@@ -184,9 +151,12 @@ def add_rate():
 def search_book(content):
     rows = Book.query.filter(
         or_(Book.id.like("%" + content + "%") if content is not None else "",
-            Book.title.like("%" + content + "%") if content is not None else "",
-            Book.author.like("%" + content + "%") if content is not None else "",
-            Book.publisher.like("%" + content + "%") if content is not None else "",
+            Book.title.like(
+                "%" + content + "%") if content is not None else "",
+            Book.author.like(
+                "%" + content + "%") if content is not None else "",
+            Book.publisher.like(
+                "%" + content + "%") if content is not None else "",
             Book.year.like("%" + content + "%") if content is not None else "")
     ).limit(100)
 
