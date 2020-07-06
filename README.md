@@ -1,6 +1,12 @@
 # 简易图书推荐系统
 
-### 截图
+## Code
+
+Front-end: https://github.com/AbyssLink/vue-admin-vuetify/tree/Book-Recommend-Flask-backend
+
+Back-end: https://github.com/AbyssLink/book-recommendation-system
+
+### ScreenShots
 
 | 图书首页                                                                                                   | 模糊搜索                                                                                                   |
 | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -10,48 +16,47 @@
 | 个人信息                                                                                                   |                                                                                                            |
 | ![Screen Shot 2019-07-15 at 1.37.46 AM](https://ww3.sinaimg.cn/large/006tNc79ly1g50c7tjx7hj31bf0u00z8.jpg) |                                                                                                            |
 
-### 概述
+## QuickStart
 
-一个简单的图书推荐系统，可在现有数据源上对用户进行简单的图书推荐。
+### 前端
 
-支持用户添加和更新评分，并更新推荐结果。
+#### 下载项目
 
-### 构建项目
-
-#### 前端
-
-##### 下载项目
-
-```bash
-git clone httpss://github.com/ShiroCheng/vue-admin-vuetify.git
+```shell
+git clone https://github.com/AbyssLink/vue-admin-vuetify.git
+# 切换分支
 git checkout Book-Recommend-Flask-backend
 cd vue-admin-vuetify
 ```
 
-##### 安装依赖
+#### 安装依赖
 
 ```shell
 npm install
 ```
 
-##### 以开发模式(热加载)启动
+#### 以开发模式(热加载)启动
 
 ```shell
 npm run serve
 ```
 
-打开 [https://localhost:3000](https://localhost:3000/) 查看 demo
-
-#### 后端
-
-##### 下载项目
+#### 以生产模式启动
 
 ```shell
-git clone httpss://github.com/ShiroCheng/Book_Recommend_System.git
+npm run build
+```
+
+### 后端
+
+#### 下载项目
+
+```shell
+git clone https://github.com/AbyssLink/Book_Recommend_System.git
 cd  Book_Recommend_System
 ```
 
-##### 配置依赖
+#### 配置依赖
 
 ```shell
 pipenv install
@@ -59,37 +64,29 @@ pipenv install
 pip install -r requirements
 ```
 
-##### 运行 Flask
+#### 运行 Flask
 
-```bash
+```shell
 python app.py
 ```
 
-### 实现
+## 实验内容
 
-前端实现较简单， vuetify 本身是成熟的响应式框架，我只在样式和布局上修改一些组件的预设。
+### 需求
 
-主要的工作在前后端跨域请求数据和前端的用户状态管理问题。
+实现一个简单的图书推荐系统，可以在已有的数据源上对用户进行简单的图书推荐。
 
-#### 项目组成
+支持用户实时添加评分，并更新推荐结果。
+
+### 详细设计
+
+项目的前端总体实现比较简单，由于 vuetify 本身就是已经非常成熟的响应式框架，我在样式和布局上主要通过修改一些组件的预设完成，主要的工作量在于前后端跨域请求数据和前端的用户状态管理问题。
+
+#### 技术栈
 
 ```
 Vue + Vuetify + Flask + SQLAlchemy + mysql
 ```
-
-#### 前端依赖
-
-1. 组件样式: `vuetify`, `material-design-icons-iconfont`
-2. 路由处理: `vue-router`
-3. ajax 请求: `axios`
-4. 时间处理: `moment`
-
-#### 后端依赖
-
-1. Web 框架：`Flask`
-2. 处理跨域请求：`flask_cors`
-3. 数据库 ORM 框架：`Flask-SQLAlchemy`
-4. 数据处理：`Pandas`, `Numpy`, `math`, `operator`
 
 #### 开发工具
 
@@ -101,46 +98,52 @@ Vue + Vuetify + Flask + SQLAlchemy + mysql
 
 数据库：`Mysql 8.0.15`, `redis 5.0.5`
 
-### 数据源
+#### 前端依赖库
 
-数据源下载地址：https://www2.informatik.uni-freiburg.de/~cziegler/BX/
+1. 组件样式: `vuetify`, `material-design-icons-iconfont`
+2. 路由处理: `vue-router`
+3. ajax 请求: `axios`
+4. 时间处理: `moment`
 
-使用的数据源来自开源的 2004 年的图书数据库，原始文件为 CSV 格式。
+#### 后端依赖库
+
+1. Web 框架：`Flask`
+2. 处理跨域请求：`flask_cors`
+3. 数据库 ORM 框架：`Flask-SQLAlchemy`
+4. 数据处理：`Pandas`, `Numpy`, `math`, `operator`
 
 #### 数据库表结构
 
-使用 MySQL 数据库，共三张表 Book，User，Rating，Book 表为图书基本信息，User 表为用户基本信息，Rating 表为用户对特定图书的评分。
+使用了 MySQL 数据库，主要为 Book，User，Rating 表，Book 表为图书基本信息，User 表为用户基本信息，Rating 表为用户对特定图书的评分。
 
 ##### ER 图：
 
-| Navicat 生成                                                                                                | DBViewer 生成                                                                                               |
-| ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| ![Screen Shot 2019-07-15 at 10.26.22 AM](https://ww4.sinaimg.cn/large/006tNc79ly1g50c7o4z3qj30ms0pi77h.jpg) | ![Screen Shot 2019-07-15 at 10.26.05 AM](https://ww2.sinaimg.cn/large/006tNc79ly1g50c7sifqsj30l40d2myj.jpg) |
+| Navicat 生成                                                                                                                         | DBViewer 生成                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Screen Shot 2019-07-15 at 10.26.22 AM](https://raw.githubusercontent.com/AbyssLink/pic/master/book-recommend-system-2019-07_1.jpg) | ![Screen Shot 2019-07-15 at 10.26.05 AM](https://raw.githubusercontent.com/AbyssLink/pic/master/book-recommend-system-2019-07_5.jpg) |
 
-数据量较大，Book 表和 User 表的数据约 30 万行，导入后预览如下：
+数据源：http://www2.informatik.uni-freiburg.de/~cziegler/BX/
 
-| User 表                                                                                                    | Book 表                                                                                                    |
-| ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| ![Screen Shot 2019-07-15 at 1.44.06 AM](https://ww1.sinaimg.cn/large/006tNc79ly1g50c7p0rq1j31c00u04qp.jpg) | ![Screen Shot 2019-07-15 at 1.43.52 AM](https://ww4.sinaimg.cn/large/006tNc79ly1g50c7qj0w7j31c00u0hdt.jpg) |
-| Rating 表                                                                                                  |                                                                                                            |
-| ![Screen Shot 2019-07-15 at 1.43.59 AM](https://ww2.sinaimg.cn/large/006tNc79ly1g50c7u7p4cj31c00u018k.jpg) |                                                                                                            |
+使用的数据源来自网络上开源 2004 年的图书数据库，下载的原始文件为 CSV 格式。
 
-### 功能实现
+处理的数据量较大，Book 表和 User 表的数据约为 30 万行。
+
+### 推荐系统实现
 
 #### 数据预处理
 
-使用 Python 的 Pandas 库，对 CSV 文件进行了行遍历，过滤了一些字段中编码非 utf-8 与数据列数目不正确的列，再使用 Navicat 的 Import Wizard 工具将 CSV 文件导入为 MySQL Table。
+使用 Python 的 Pandas 库，对 CSV 文件进行了行遍历，过滤了一些字段中编码非 utf-8 与数据列数目不正确的列，再使用 Navicat 的 Import Wizard 工具将 CSV 文件导入为 MySQL 表格。
 
 #### 用户登陆
 
-前台向后台发送登陆表单的信息，同时接受后台发送的用户详细信息存储在浏览器本地缓存(localStorage), 以在前端显示用户头像，用户名等 Profile.
+前台向后台发送登陆表单的信息，同时接受后台发送的用户详细信息存储在浏览器本地缓存(localStorage), 以在前端显示用户头像，用户名等.
 
 ```javascript
 login() {
-      Vue.prototype.$https
+      Vue.prototype.$http
         .post("/login", this.userInfo)
         .then(response => {
-          if (response.data.ok == true) {
+          if (response.data.status == "success") {
             // 存储登陆信息在客户端浏览器中
             let userFullInfo = response.data.data;
             localStorage.setItem("LOGIN_USER", JSON.stringify(userFullInfo));
@@ -171,15 +174,15 @@ def login():
     login_user = User.query.filter_by(id=user_id).first()
     if login_user is not None:
         if login_user.password == password:
-            response['ok'] = True
+            response['status'] = 'success'
             response['data'] = User.as_dict(login_user)
             return json.dumps(response)
         else:
-            response['ok'] = False
+            response['status'] = 'fail'
             response['errMsg'] = '密码不正确'
             return json.dumps(response)
     else:
-        response['ok'] = False
+        response['status'] = 'fail'
         response['errMsg'] = '用户名不存在'
         return json.dumps(response)
 ```
@@ -188,7 +191,7 @@ def login():
 
 前端以表单形式添加一条评价记录，后端通过获取参数使用数据库方法查询是否已有评分记录，已有则更新评分，否则新建评分。
 
-前端使用 post 方法发送表单数据：
+前台使用 post 方法发送表单数据：
 
 ```javascript
 // 发送用户评分请求
@@ -198,10 +201,10 @@ addRate() {
       this.form.bookId = this.item.item_id;
       this.form.score = this.rating * 2; // 0～5分制 => 0~10分制
       console.log(this.form);
-      Vue.prototype.$https
+      Vue.prototype.$http
         .post("/rating/add", this.form)
         .then(response => {
-          if (response.data.ok == True) {
+          if (response.data.status == "success") {
             this.message = "评价成功";
            ...
           } else {
@@ -214,7 +217,7 @@ addRate() {
     },
 ```
 
-后端响应：
+设置后台响应：
 
 ```python
 # 添加用户评分
@@ -229,7 +232,7 @@ def add_rate():
     else:
         db.session.add(Rating(user_id=user_id, book_id=book_id, score=score))
     db.session.commit()
-    response = {'ok': True}
+    response = {'status': 'success'}
     return json.dumps(response)
 ```
 
@@ -241,7 +244,7 @@ similar[i][j] = u(i) ∩ u(j) / sqrt(u(i) * u(j))
 predict[u][j] = ∑( i ∊ n(u) ∩ similar(j, k) ) similar[i][j] * rate[u][i]
 ```
 
-推荐算法为协同过滤。计算相似度然后根据相似度排序，对用户的行为进行遍历，形成推荐列表。
+算法的主要的步骤是计算相似度然后根据相似度排序，对用户的行为进行遍历，形成推荐列表。
 
 **相似度中贡献度的计算函数：**
 
@@ -304,3 +307,4 @@ def search_book(content):
 
     return json.dumps(response)
 ```
+
